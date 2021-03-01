@@ -7,5 +7,6 @@ filename_data = "../data/imports-85.data.txt"
 
 names = np.loadtxt(filename_attributes, dtype=str)
 
-df = pd.read_csv(filename_data, names=names)
-print(df.head())
+raw_data = pd.read_csv(filename_data, names=names)
+
+raw_data = raw_data.drop(['normalized-losses'], axis=1)
