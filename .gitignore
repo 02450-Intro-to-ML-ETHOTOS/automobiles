@@ -4,3 +4,7 @@ __pycache__
 
 # editor files
 .spyproject
+
+# output dirs and files
+out*
+*.tsv
