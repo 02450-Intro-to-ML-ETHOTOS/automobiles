@@ -18,3 +18,6 @@ raw_data = raw_data.drop(['normalized-losses'], axis=1)
 raw_data = raw_data.replace('?', np.NaN)
 raw_data = raw_data.dropna(axis=0)
 
+# Cast numeric values to float
+# see https://stackoverflow.com/a/16134561/13962373
+raw_data = raw_data.apply(pd.to_numeric, errors='ignore')
