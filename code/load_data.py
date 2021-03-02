@@ -12,11 +12,11 @@ names = np.loadtxt(filename_attributes, dtype=str)
 raw_data = pd.read_csv(filename_data, names=names)
 
 #Remove column "normalized-losses"
-raw_data = raw_data.drop(['normalized-losses'], axis=1)
+data = raw_data.drop(['normalized-losses'], axis=1)
 
 #Remove all rows with "?" as given value
-raw_data = raw_data.replace('?', np.NaN)
-raw_data = raw_data.dropna(axis=0)
+data = raw_data.replace('?', np.NaN)
+data = raw_data.dropna(axis=0)
 
 # Cast numeric values to float
 # see https://stackoverflow.com/a/16134561/13962373
