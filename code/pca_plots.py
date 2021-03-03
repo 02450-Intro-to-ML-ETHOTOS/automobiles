@@ -19,8 +19,8 @@ plt.grid()
 plt.show()
 #------------------------------------------------------------------------------
 ### Cluster plot of attributes in columns i an j
-i = 5
-j = 12
+i = 0
+j = 1
 
 f = figure()
 title('Body Style: Attributes')

@@ -9,11 +9,15 @@ dropped_data = raw_data.drop(['body_style', 'engine_type', 'num_of_cylinders', '
                          'symboling', 'make',  'fuel_type', 'aspiration', 'num_of_doors',
                          'engine_location', 'drive_wheels','compression_ratio'], axis=1)
  
+###Uncomment to filter out colums
+#Extract Attributes wheel-base, length, width, height
+dropped_data = dropped_data.iloc[:, [0,1,2,3]]
+
 #Extract list with attributeNames
 attributeNames = np.array(dropped_data.columns)
 
-# Extract class names to python list,
-# then encode with integers (dict)
+# Extract class names to python list, 
+#then encode with integers (dict)
 classNames = sorted(set(classLabels))
 classDict = dict(zip(classNames, range(5)))
 
