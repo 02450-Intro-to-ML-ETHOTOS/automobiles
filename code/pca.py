@@ -1,14 +1,16 @@
 from load_data import *
 
 from scipy.linalg import svd
+from matplotlib.pyplot import (figure, boxplot, plot, title, legend, xlabel, 
+                               subplot, ylabel, show, xticks, ylim)
 
 classLabels= raw_data.body_style.tolist()
-X = raw_data.drop(['body_style', 'engine_type', 'num_of_cylinders', 'fuel_system',
+dropped_data = raw_data.drop(['body_style', 'engine_type', 'num_of_cylinders', 'fuel_system',
                          'symboling', 'make',  'fuel_type', 'aspiration', 'num_of_doors',
-                         'engine_location', 'drive_wheels'], axis=1)
+                         'engine_location', 'drive_wheels','compression_ratio'], axis=1)
  
 #Extract list with attributeNames
-attributeNames = np.array(X.columns)
+attributeNames = np.array(dropped_data.columns)
 
 # Extract class names to python list,
 # then encode with integers (dict)
@@ -24,9 +26,12 @@ M = len(attributeNames)
 C = len(classNames)
 
 # Subtract mean value from data
-X = np.array(X)
+X = np.array(dropped_data)
 Y = X - np.ones((N,1))*X.mean(axis=0)
 
 # PCA by computing SVD of Y
-U,S,V = svd(Y,full_matrices=False)
+U,S,Vh = svd(Y,full_matrices=False)
+
+rho = (S*S) / (S*S).sum() 
+
 
