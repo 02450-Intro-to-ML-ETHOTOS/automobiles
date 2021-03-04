@@ -9,9 +9,9 @@ dropped_data = raw_data.drop(['body_style', 'engine_type', 'num_of_cylinders', '
                          'symboling', 'make',  'fuel_type', 'aspiration', 'num_of_doors',
                          'engine_location', 'drive_wheels','compression_ratio'], axis=1)
  
-###Uncomment to filter out colums
+###Uncomment to filter out colums for PCA
 #Extract Attributes wheel-base, length, width, height
-dropped_data = dropped_data.iloc[:, [0,1,2,3]]
+#dropped_data = dropped_data.iloc[:, [0,1,2,3]]
 
 #Extract list with attributeNames
 attributeNames = np.array(dropped_data.columns)
@@ -31,7 +31,11 @@ C = len(classNames)
 
 # Subtract mean value from data
 X = np.array(dropped_data)
+
+# Subtract the mean from the data and divide by the attribute standard
+# deviation to obtain a standardized dataset:
 Y = X - np.ones((N,1))*X.mean(axis=0)
+Y = Y*(1/np.std(Y,0))
 
 # PCA by computing SVD of Y
 U,S,Vh = svd(Y,full_matrices=False)
