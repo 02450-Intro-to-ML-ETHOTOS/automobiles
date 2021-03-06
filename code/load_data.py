@@ -50,3 +50,10 @@ categorical_attrs = ["aspiration",
                     "num_of_cylinders", 
                     "num_of_doors", 
                     "symboling"]
+
+# setup dicts for easy lookup
+class_names = sorted(set(raw_data["body_style"].values)) # Convertible, Hardtop, Hatchback, Sedan, Wagon
+class2idx = dict(zip(class_names, range(len(class_names)))) # e.g. class2idx["convertible"] = 0
+idx2Class = dict(zip(range(len(class_names)), [c.capitalize() for c in class_names])) # n.b. capitalized!
+
+num_attr2idx = dict(zip(numerical_attrs, range(len(numerical_attrs)))) # e.g. num_attr2idx["length"] = 1

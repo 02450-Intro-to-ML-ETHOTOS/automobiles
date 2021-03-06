@@ -10,13 +10,6 @@ os.makedirs("../out/plots", exist_ok=True)
 
 class_labels = raw_data["body_style"].values # 193 labels
 
-#then encode with integers (dict)
-class_names = sorted(set(class_labels))
-class2idx = dict(zip(class_names, range(len(class_names))))
-attr2idx = dict(zip(numerical_attrs, range(len(numerical_attrs))))
-idx2label = dict(zip(range(len(class_names)), [c.capitalize() for c in class_names]))
-
-
 # Extract vector y, convert to NumPy array
 y = np.asarray([class2idx[value] for value in class_labels])
 
@@ -30,7 +23,7 @@ N = X.shape[0] # num obs
 # Plot scatter plots
 
 ## Next we plot a number of atttributes
-Attributes = [attr2idx[c] for c in ["bore", "height", "curb_weight", "engine_size", "price"]]
+Attributes = [num_attr2idx[c] for c in ["bore", "height", "curb_weight", "engine_size", "price"]]
 NumAtr = len(Attributes)
 
 fig = plt.figure(figsize=(14,14))
@@ -42,7 +35,7 @@ for m1 in range(NumAtr):
         # iterate over classes and plot each individually
         for c in range(C):
             class_mask = (y==c)
-            plt.scatter(X[class_mask,Attributes[m2]], X[class_mask,Attributes[m1]], marker='o', label=idx2label[c], alpha=0.3)
+            plt.scatter(X[class_mask,Attributes[m2]], X[class_mask,Attributes[m1]], marker='o', label=idx2Class[c], alpha=0.3)
             
         # handle x-axis labels
         if m1 == 0: # add label to top row plots

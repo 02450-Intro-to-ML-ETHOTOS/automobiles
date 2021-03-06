@@ -8,15 +8,8 @@ import os
 # make output dir
 os.makedirs("../out/plots", exist_ok=True)
 
-class_labels = raw_data["body_style"].values # 193 labels
-
-#then encode with integers (dict)
-class_names = sorted(set(class_labels))
-class2idx = dict(zip(class_names, range(len(class_names))))
-idx2label = dict(zip(range(len(class_names)), [c.capitalize() for c in class_names]))
-
 # Extract vector y, convert to NumPy array
-y = np.asarray([class2idx[value] for value in class_labels])
+y = np.asarray([class2idx[value] for value in raw_data["body_style"].values]) # 193 labels
 
 
 # subset dataframe to numerical attributes
@@ -40,7 +33,7 @@ for m1 in range(NumAtr):
         # iterate over classes and plot each individually
         for c in range(C):
             class_mask = (y==c)
-            plt.scatter(X[class_mask,Attributes[m2]], X[class_mask,Attributes[m1]], s=2.0, marker='.', label=idx2label[c])
+            plt.scatter(X[class_mask,Attributes[m2]], X[class_mask,Attributes[m1]], s=2.0, marker='.', label=idx2Class[c])
             
         # handle x-axis labels
         if m1 == 0: # add label to top row plots
