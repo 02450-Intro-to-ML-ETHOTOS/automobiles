@@ -13,7 +13,9 @@ class_labels = raw_data["body_style"].values # 193 labels
 #then encode with integers (dict)
 class_names = sorted(set(class_labels))
 class2idx = dict(zip(class_names, range(len(class_names))))
+attr2idx = dict(zip(numerical_attrs, range(len(numerical_attrs))))
 idx2label = dict(zip(range(len(class_names)), [c.capitalize() for c in class_names]))
+
 
 # Extract vector y, convert to NumPy array
 y = np.asarray([class2idx[value] for value in class_labels])
@@ -28,7 +30,7 @@ N = X.shape[0] # num obs
 # Plot scatter plots
 
 ## Next we plot a number of atttributes
-Attributes = [i for i in range(len(numerical_attrs))]
+Attributes = [attr2idx[c] for c in ["bore", "height", "curb_weight", "engine_size", "price"]]
 NumAtr = len(Attributes)
 
 fig = plt.figure(figsize=(14,14))
@@ -40,7 +42,7 @@ for m1 in range(NumAtr):
         # iterate over classes and plot each individually
         for c in range(C):
             class_mask = (y==c)
-            plt.scatter(X[class_mask,Attributes[m2]], X[class_mask,Attributes[m1]], s=2.0, marker='.', label=idx2label[c])
+            plt.scatter(X[class_mask,Attributes[m2]], X[class_mask,Attributes[m1]], marker='o', label=idx2label[c], alpha=0.3)
             
         # handle x-axis labels
         if m1 == 0: # add label to top row plots
@@ -70,8 +72,8 @@ for m1 in range(NumAtr):
 handles, labels = fig.axes[0].get_legend_handles_labels() # get handles and labels for very first subplot
 fig.legend(handles, labels, title='Body Style', loc="upper right") # use handles and labels from first subplot to make legend
 
-plt.suptitle("Combinations of All Numerical Attributes", va="bottom", fontsize="xx-large")
+plt.suptitle("Combinations of Selected Numerical Attributes", va="bottom", fontsize="xx-large")
 
 # show or save plot
 # plt.show()
-plt.savefig("../out/plots/scatterplot_overview.png", dpi=200)
+plt.savefig("../out/plots/scatterplot_detail.png", dpi=200)
