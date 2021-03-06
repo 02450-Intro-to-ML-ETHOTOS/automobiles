@@ -1,9 +1,5 @@
 from load_data import *
 
-import matplotlib.pyplot as plt
-import numpy as np
-import scipy.stats as sps
-import os
 
 # make output dir
 os.makedirs("../out/plots", exist_ok=True)

@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import os
 
 # n.b. paths are set as if executing from the code dir
 # Specify path to file with attribute headers
