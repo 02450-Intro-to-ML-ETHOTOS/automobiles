@@ -37,3 +37,33 @@ fig.tight_layout()
 # show or save plot
 # plt.show()
 plt.savefig("../out/plots/histogram_peak_rpm.png", dpi=200)
+
+
+attrs_selection = ["engine_size", "wheel_base", "compression_ratio"]
+
+# subset dataframe to X
+X = raw_data[attrs_selection].values
+C = len(np.unique(raw_data["body_style"]))
+M = X.shape[1] # num attributes
+N = X.shape[0] # num obs
+
+
+# Plot histograms
+fig = plt.figure(figsize=(12,4))
+# u = np.floor(np.sqrt(M)); v = np.ceil(float(M)/u)
+for i in range(M):
+    plt.subplot(1,3,i+1)
+    plt.hist(X[:,i], bins=14, color="dodgerblue")
+    # plt.xlabel(numerical_attrs[i])
+    plt.ylim(0, N) # Make the y-axes equal for improved readability
+    # if i%v!=0: plt.yticks([])
+    plt.title(numerical_attrs[i])
+
+# plt.subplots_adjust(wspace=0.3, hspace=0.3)
+plt.suptitle("Distributions of Values for Numerical Attributes", fontsize="xx-large")
+fig.tight_layout()
+# show or save plot
+# plt.show()
+plt.savefig("../out/plots/histograms_selection.png", dpi=200)
+
+
