@@ -19,7 +19,7 @@ N = X.shape[0] # num obs
 # Plot scatter plots
 
 ## Next we plot a number of atttributes
-Attributes = [num_attr2idx[c] for c in ["bore", "height", "curb_weight", "engine_size", "price"]]
+Attributes = [num_attr2idx[c] for c in ["height", "curb_weight", "engine_size", "price"]]
 NumAtr = len(Attributes)
 
 fig = plt.figure(figsize=(14,14))
