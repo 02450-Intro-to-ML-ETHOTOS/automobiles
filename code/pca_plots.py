@@ -37,7 +37,7 @@ j = 1
 
 # Plot PCA of the data
 f = figure()
-title('NanoNose data: PCA')
+title('Automobile data: PCA')
 #Z = array(Z)
 for c in range(C):
     # select indices belonging to class c:
