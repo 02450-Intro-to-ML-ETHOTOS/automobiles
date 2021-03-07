@@ -1,41 +1,8 @@
 from pca import *
+from decimal import Decimal
 
 import matplotlib.pyplot as plt
 
-#------------------------------------------------------------------------------
-### Plot explanation of principle components
-threshold = 0.95
-
-# Plot variance explained
-plt.figure()
-plt.plot(range(1,len(rho)+1),rho,'x-')
-plt.plot(range(1,len(rho)+1),np.cumsum(rho),'o-')
-plt.plot([1,len(rho)],[threshold, threshold],'k--')
-plt.title('Variance explained by principal components');
-plt.xlabel('Principal component');
-plt.ylabel('Variance explained');
-plt.legend(['Individual','Cumulative','Threshold'])
-plt.grid()
-plt.show()
-#------------------------------------------------------------------------------
-### Cluster plot of attributes in columns i an j
-i = 0
-j = 1
-
-f = figure()
-title('Body Style: Attributes')
-
-for c in range(C):
-    # select indices belonging to class c:
-    class_mask = y==c
-    plot(X[class_mask,i], X[class_mask,j], 'o',alpha=.3)
-
-legend(classNames)
-xlabel(attributeNames[i])
-ylabel(attributeNames[j])
-
-# Ouput result to screen
-show()
 #------------------------------------------------------------------------------
 ### Cluster plot of principle components
 
@@ -46,13 +13,31 @@ V = Vh.T
 # Project the centered data onto principal component space
 Z = Y @ V
 
-# Indices of the principal components to be plotted
+
+# Cluster plots with all components against each other
+
+sigcomp = 6
+f=figure(figsize=(30,30))
+
+for i in range(sigcomp):
+    for j in range(sigcomp):
+        plt.subplot(sigcomp+1, sigcomp, ((i+1)*sigcomp+(j+1)))
+        for c in range(C):
+            # select indices belonging to class c:
+            class_mask = y==c
+            plot(Z[class_mask,i], Z[class_mask,j], 'o', alpha=.5)
+            legend(classNames)
+        xlabel('PC{0}'.format(i+1))
+        ylabel('PC{0}'.format(j+1))
+
+
+# Cluster plot of specific components i and j
 i = 0
 j = 1
 
 # Plot PCA of the data
 f = figure()
-title('Body Style: PCA')
+title('NanoNose data: PCA')
 #Z = array(Z)
 for c in range(C):
     # select indices belonging to class c:
@@ -64,6 +49,7 @@ ylabel('PC{0}'.format(j+1))
 
 # Output result to screen
 show()
+
 #------------------------------------------------------------------------------
 ###
 f=figure(figsize=(10,5))
@@ -82,14 +68,41 @@ plt.grid()
 plt.title('Body Style:: PCA Component Coefficients')
 plt.xticks(rotation = 45)
 plt.show()
+
 #------------------------------------------------------------------------------
-### Plot attribute standard deviation
-f=figure(figsize=(10,5))
-r = np.arange(1,X.shape[1]+1)
-plt.bar(r, np.std(X,0))
-plt.xticks(r, attributeNames)
-plt.xticks(rotation = 45)
-plt.ylabel('Standard deviation')
-plt.xlabel('Attributes')
-plt.title('NanoNose: attribute standard deviations')
+### Plot explanation of principle components
+threshold = 0.95
+
+f=figure(figsize=(10,7))
+# Plot variance explained
+plt.plot(range(1,len(rho)+1),rho,'x-')
+
+for x,y in zip(range(1,len(rho)+1),rho):
+    
+    label = "{:.2f}".format(y)
+
+    plt.annotate(label, # this is the text
+                 (x,y), # this is the point to label
+                 textcoords="offset points", # how to position the text
+                 xytext=(0,5), # distance from text to points (x,y)
+                 ha='center') # horizontal alignment can be left, right or center
+
+plt.plot(range(1,len(rho)+1),np.cumsum(rho),'o-')
+
+for x,y in zip(range(1,len(rho)+1),np.cumsum(rho)):
+
+    label = "{:.2f}".format(y)
+
+    plt.annotate(label, # this is the text
+                 (x,y), # this is the point to label
+                 textcoords="offset points", # how to position the text
+                 xytext=(0,5), # distance from text to points (x,y)
+                 ha='center') # horizontal alignment can be left, right or center
+
+plt.plot([1,len(rho)],[threshold, threshold],'k--')
+plt.title('Variance explained by principal components');
+plt.xlabel('Principal component');
+plt.ylabel('Variance explained');
+plt.legend(['Individual','Cumulative','Threshold'])
+plt.grid()
 plt.show()
