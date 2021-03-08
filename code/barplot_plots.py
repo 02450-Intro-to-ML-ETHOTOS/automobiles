@@ -1,18 +1,25 @@
 from load_data import *
 
-
-y_measure = "count"
+scope = "all"
+y_measure = "pct"
 
 # summmary statistics for categorical values
 sumstats_categorical_attrs = {a: raw_data[a].value_counts().to_frame() for a in categorical_attrs}
 
+cat_attrs = ["engine_location", "fuel_type", "make", "num_of_doors"] if scope == "selected" else categorical_attrs
+figsize = (10,4) if scope == "selected" else (12,10)
 
-fig = plt.figure(figsize=(14,12))
-M = len(categorical_attrs)
-u = int(np.floor(np.sqrt(M))); v = int(np.ceil(float(M)/u))
+fig = plt.figure(figsize=figsize)
+M = len(cat_attrs)
+
+if (len(cat_attrs) > 4):
+    u = int(np.floor(np.sqrt(M))); v = int(np.ceil(float(M)/u))
+else:
+    u = 1; v = 4
+
 N = raw_data.shape[0]
 
-attrs = iter(categorical_attrs)
+attrs = iter(cat_attrs)
 
 for i in range(M):
     # use generator to iterate through categorical attributes
@@ -45,8 +52,8 @@ for i in range(M):
     plt.ylabel(y_measure)
 
 
-plt.suptitle("Categorical Attribute Value Distributions", va="bottom", fontsize="xx-large")
+plt.suptitle("Categorical Attribute Value Distributions", fontsize="xx-large")
 fig.tight_layout()
 # show or save plot
 # plt.show()
-plt.savefig(f"../out/plots/barplots_{y_measure}.png", dpi=200)
+plt.savefig(f"../out/plots/barplots_{y_measure}_{scope}.png", dpi=200)
