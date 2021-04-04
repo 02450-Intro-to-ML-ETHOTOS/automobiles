@@ -21,13 +21,30 @@ X_cat = raw_data[categorical_attrs]  # 11 attributes
 X_cat = X_cat.astype('category')
 # print(X_cat["symboling"])
 
-# 61 attributes, when using one-hot encoding
-X_cat = pd.get_dummies(X_cat, columns=categorical_attrs, drop_first=False)
+# commnet/uncomment to control which variables are included
+categorical_attrs = ["aspiration", 
+                    "body_style", 
+                    "drive_wheels", 
+                    "engine_location", 
+                    "engine_type", 
+                    "fuel_system", 
+                    "fuel_type", 
+                    "make", 
+                    "num_of_cylinders", 
+                    "num_of_doors", 
+                    "symboling"]
+
+# 50 attributes, when using one-hot encoding
+# N.B. if we don't drop first, the coefficients may explode. See "Dummy variable trap"
+X_cat = pd.get_dummies(X_cat[categorical_attrs], columns=categorical_attrs, drop_first=True)
 # print(X_cat.head()) # verify one-hot encoding
 # print(X_cat.shape)
 
 # combine numerical and categorical data
-X = np.hstack((X_num, X_cat.values))  # 74 attributes in total
+X = np.hstack((X_num, X_cat.values))  # 63 attributes in total
 
 # print(X)
 # print(X.shape)
+
+# set up useful variables
+N, M = X.shape
