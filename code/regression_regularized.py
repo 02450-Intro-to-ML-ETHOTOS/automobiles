@@ -18,7 +18,7 @@ CV = model_selection.KFold(K, shuffle=True, random_state=42)
 
 # goal: choose a reasonable range of values of lambda
 # set up regularization parameters # TODO: play with these values
-lambdas = np.logspace(-4, 2, 16)
+lambdas = np.logspace(-2, 2, 32)
 print("Lambdas:", lambdas)
 # lambdas = np.logspace(-8, 2, 10)
 # lambdas = np.logspace(-8, 2, 2)
@@ -102,7 +102,7 @@ for train_index, test_index in CV.split(X, y):
 
         # store results
         # recall: k=fold, s=model
-        ws[k, s, :]
+        ws[k, s, :] = w_star
         train_error[k, s] = error_train
         test_error[k, s] = error_test
 
@@ -144,7 +144,7 @@ ylabel('Mean Coefficient Values')
 grid()
 # You can choose to display the legend, but it's omitted for a cleaner
 # plot, since there are many attributes
-legend(range(0, M), loc='best')
+# legend(range(0, M), loc='best') # uncomment to enable legend - though it does not fit on screen
 
 subplot(1, 2, 2)
 title('Optimal lambda: 1e{0}'.format(np.log10(opt_lambda)))
