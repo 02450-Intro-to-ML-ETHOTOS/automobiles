@@ -2,11 +2,9 @@
 # use algorithm 5 from the book, i.e.: K-fold cross-validation for model selection
 
 from regression_transform_data import *
+# imports numpy as np, pandas as pd
 
-import numpy as np
-from sklearn import model_selection
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+
 
 from matplotlib.pylab import (figure, semilogx, loglog, xlabel, ylabel, legend,
                               title, subplot, show, grid)
