@@ -4,6 +4,8 @@ from regression_regularized_model import *
 # imports numpy as np, pandas as pd, various sklearn modules
 
 from pprint import pprint
+import scipy.stats as st
+from itertools import combinations
 
 # set up cross validation for outer folds
 K = 10
@@ -52,3 +54,32 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     
 pprint(model_errors_test)
 pprint(model_parameters)
+
+# statistical comparison - setup I - paired t-test
+# N.B. Include p-values and conﬁdence intervals for the three pairwise tests
+
+def t_test_paired(zA, zB, alpha = 0.05):
+    # TODO: is zA supposed to be the mean E_test error? Or the error for each observation?
+    # In the book box 11.3.4 they write that they recommend n >= 30 samples
+    # See ex7_2_1.py for inspiration
+    # TODO: is this one or two-tailed? Likely one-tailed
+
+    z = zA - zB
+    # TODO: explain what is going on here
+    # probably look into source code to get an explanation
+    CI = st.t.interval(1-alpha, len(z)-1, loc=np.mean(z), scale=st.sem(z))  # Confidence interval
+    p = st.t.cdf( -np.abs( np.mean(z) )/st.sem(z), df=len(z)-1)  # p-value
+    
+    return p, CI
+
+# p, ci = t_test_paired(np.array(model_errors_test["B"]), np.array(model_errors_test["RR"]))
+# print(f"p = {p}, with CI: {ci}")
+# TODO: explain what these values mean in this context
+
+model_combinations = list(combinations(models, 2))
+
+for mA, mB in model_combinations:
+    print(mA, mB)
+    # 1) extract errors
+
+    # 2) feed to t_test func
