@@ -3,6 +3,10 @@ from load_data import *
 import numpy as np
 import pandas as pd
 
+from sklearn import model_selection
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
 # extract y and convert to np array
 y = raw_data["price"].to_numpy()
 N = len(y)
