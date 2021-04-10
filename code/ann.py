@@ -11,14 +11,8 @@ from scipy import stats
 import torch
 from toolbox_02450 import train_neural_net, draw_neural_net
 
-
-#running with only continous values
-#X = X[:,:13]
-#N, M = X.shape
-
-attributeNames = numerical_attrs + (X_cat.columns.values).tolist()
 C = 2                               # Number of classes.
-n_hidden_units = 3                  # number of hidden units
+n_hidden_units = 5                  # number of hidden units
 n_replicates = 1                    # number of networks trained in each k-fold
 max_iter = 200
 
