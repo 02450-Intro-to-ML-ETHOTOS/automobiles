@@ -52,3 +52,6 @@ X = np.hstack((X_num, X_cat.values))  # 63 attributes in total
 
 # set up useful variables
 N, M = X.shape
+
+#List of attribute names
+attributeNames = numerical_attrs + (X_cat.columns.values).tolist()
