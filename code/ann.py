@@ -9,12 +9,11 @@ import matplotlib.pyplot as plt
 from scipy.io import loadmat
 from scipy import stats
 import torch
-from toolbox_02450 import train_neural_net, draw_neural_net
+from toolbox_local import train_neural_net, draw_neural_net
 
-C = 2                               # Number of classes.
-n_hidden_units = 5                  # number of hidden units
+n_hidden_units = 256                  # number of hidden units
 n_replicates = 1                    # number of networks trained in each k-fold
-max_iter = 200
+max_iter = 10000
 
 K = 10    # Number of folds
 CV = model_selection.KFold(K, shuffle=True)
@@ -30,7 +29,8 @@ color_list = ['tab:orange', 'tab:green', 'tab:purple', 'tab:brown', 'tab:pink',
 # With regression, we do not apply a transfer-function to the final layer
 model = lambda: torch.nn.Sequential(
                     torch.nn.Linear(M, n_hidden_units), #M features to n_hidden_units
-                    torch.nn.Tanh(),   # 1st transfer function,
+                    # torch.nn.Tanh(),   # 1st transfer function,
+                    torch.nn.ReLU(),
                     torch.nn.Linear(n_hidden_units, n_out), # n_hidden_units to output neurons
                     # no final tranfer function, i.e. "linear output"
                     )
@@ -101,7 +101,7 @@ axis_range = [np.min([y_est, y_true])-1,np.max([y_est, y_true])+1]
 plt.plot(axis_range,axis_range,'k--')
 plt.plot(y_true, y_est,'ob',alpha=.25)
 plt.legend(['Perfect estimation','Model estimations'])
-plt.title('Alcohol content: estimated versus true value (for last CV-fold)')
+plt.title('Car price: estimated versus true value (for last CV-fold)')
 plt.ylim(axis_range); plt.xlim(axis_range)
 plt.xlabel('True value')
 plt.ylabel('Estimated value')
