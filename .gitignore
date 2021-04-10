@@ -5,6 +5,7 @@ __pycache__
 
 # editor files
 .spyproject
+.vscode
 
 # output dirs and files
 out*
