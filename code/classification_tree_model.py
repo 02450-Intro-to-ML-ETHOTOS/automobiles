@@ -5,7 +5,7 @@ from scipy.io import loadmat
 from sklearn import model_selection, tree
 
 # Tree complexity parameter - constraint on maximum depth
-tc = np.arange(2,21, 1)
+tc = np.arange(2,20, 1)
 
 # K-fold crossvalidation
 K = 10
@@ -20,13 +20,20 @@ for train_index, test_index in CV.split(X):
     print('Computing CV fold: {0}/{1}..'.format(k+1,K))
 
     # extract training and test set for current CV fold
-    X_train, y_train = X[train_index,:], y[train_index]
-    X_test, y_test = X[test_index,:], y[test_index]
-
+    X_train, y_train= X[train_index,:], y[train_index]
+    X_test, y_test= X[test_index,:], y[test_index]
+   
+    # swap row - column
+    #y_test = np.concatenate((y_test[:,0].reshape((-1,1)).T,y_test[:,1].reshape((-1,1)).T,
+    #                         y_test[:,2].reshape((-1,1)).T, y_test[:,3].reshape((-1,1)).T,
+    #                         y_test[:,4].reshape((-1,1)).T), axis = 0)
+    
     for i, t in enumerate(tc):
-        # Fit decision tree classifier, Gini split criterion, different pruning levels
-        dtc = tree.DecisionTreeClassifier(criterion='gini', max_depth=t)
-        #dtc = tree.DecisionTreeClassifier(criterion='gini', min_samples_split=t) #use min samples as split
+        # Fit decision tree classifier, Gini/Entropy split criterion, different pruning level
+        # can also use "min_samples_split" and "min_samples_leaf" as stop criteria
+        dtc = tree.DecisionTreeClassifier(criterion='gini', max_depth=t, class_weight = 'balanced')
+        #dtc = tree.DecisionTreeClassifier(criterion='entropy', max_depth=t)
+        #dtc = tree.DecisionTreeClassifier(criterion='gini', min_samples_split=t) 
         dtc = dtc.fit(X_train,y_train)
         y_est_test = dtc.predict(X_test)
         y_est_train = dtc.predict(X_train)
