@@ -159,12 +159,12 @@ class RegressionANNModel(object):
         assert(self.net is not None), "Model not trained yet!"
 
         y_pred = self.net(X)
-        return y_pred.detach().numpy()
+        return y_pred.detach().numpy().squeeze()
 
 
 # test
 # X = torch.Tensor(X)
 # y = torch.Tensor(y)
 # ann_model = RegressionANNModel()
-# ann_model.fit(X, y, hidden_list=[1, 2, 16], K=10, max_iter=3000)
-# print(ann_model.predict(X))
+# ann_model.fit(X, y, hidden_list=[1, 2, 16], K=2, max_iter=1000)
+# print(ann_model.predict(X[:3,:]))
