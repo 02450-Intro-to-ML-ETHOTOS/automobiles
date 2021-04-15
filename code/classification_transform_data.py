@@ -14,6 +14,9 @@ y = body_style.to_numpy()
 convertible = (1*np.all(y == 0, axis=1)).reshape((-1,1))
 y = np.append(y, convertible, axis=1)
 
+#Modify class_names to account for the appended column
+class_names.append(class_names.pop(class_names.index("convertible")))
+
 # append numerical attributes header list with price, (now 14 in total)
 numerical_attrs.append("price")
 
