@@ -101,16 +101,16 @@ class RidgeRegressionModel(object):
                 train_error[k, s] = error_train
                 test_error[k, s] = error_test
         
+        # calculate mean error over k folds for each lambda
+        error_train_mean_per_lambda = np.mean(train_error, axis=0)
+        error_test_mean_per_lambda = np.mean(test_error, axis=0)
+
         # finally, choose optimal lambda
         # min of mean validation error over K folds is optimal
-        opt_val_err = np.min(np.mean(test_error, axis=0))
+        opt_val_err = np.min(error_test_mean_per_lambda)
         # the lambda that gives opt_val_err
-        opt_lambda_idx = np.argmin(np.mean(test_error, axis=0))
+        opt_lambda_idx = np.argmin(error_test_mean_per_lambda)
         opt_lambda = lambdas[opt_lambda_idx]
-
-        # calculate mean error over k folds for each lambda
-        train_err_vs_lambda = np.mean(train_error, axis=0)
-        test_err_vs_lambda = np.mean(test_error, axis=0)
 
         # mean coefficient for plotting
         # mean over folds yields matrix of shape (S,M), i.e. for each lambda term, a weight w
@@ -125,7 +125,7 @@ class RidgeRegressionModel(object):
         # this is what is done in ex8_1_1.py
         lambdaI = opt_lambda * np.eye(M)
         lambdaI[0, 0] = 0  # remove bias regularization
-        xTx = X.T @ X
+        xTx = X.T @ X      # N.B. using full dataset
         xTy = X.T @ y
         w_star = np.linalg.solve(xTx+lambdaI, xTy).squeeze()
         # w_star = (np.linalg.inv(xTx + lambdaI) @ xTy).squeeze()
@@ -133,7 +133,7 @@ class RidgeRegressionModel(object):
         self.w_star = w_star
         self.lambda_opt = opt_lambda
         
-        return opt_lambda, opt_lambda_idx, train_err_vs_lambda, test_err_vs_lambda, mean_w_vs_lambda
+        return opt_lambda, opt_lambda_idx, error_train_mean_per_lambda, error_test_mean_per_lambda, mean_w_vs_lambda
 
     def predict(self, X):
         assert(self.w_star is not None), "Model not trained yet!"
