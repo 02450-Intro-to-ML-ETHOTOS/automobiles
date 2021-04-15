@@ -59,7 +59,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     n_hidden = [1, 16, 32] # , 64, 128, 256, 512
     ann_model = RegressionANNModel()
     ann_model.fit(torch.Tensor(X_train), torch.Tensor(y_train), n_hidden, 10, max_iter=3000)
-    model_errors_test["ANN"].append(evaluate_model(ann_model, torch.Tensor(X_test), torch.Tensor(y_test)).numpy())
+    model_errors_test["ANN"].append(evaluate_model(ann_model, torch.Tensor(X_test), y_test))
     model_parameters["ANN"].append(ann_model.n_hidden)
 
 
