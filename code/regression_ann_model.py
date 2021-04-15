@@ -163,8 +163,8 @@ class RegressionANNModel(object):
 
 
 # test
-X = torch.Tensor(X)
-y = torch.Tensor(y)
-ann_model = RegressionANNModel()
-ann_model.fit(X, y, hidden_list=[1, 2, 16], K=10, max_iter=3000)
-print(ann_model.predict(X))
+# X = torch.Tensor(X)
+# y = torch.Tensor(y)
+# ann_model = RegressionANNModel()
+# ann_model.fit(X, y, hidden_list=[1, 2, 16], K=10, max_iter=3000)
+# print(ann_model.predict(X))
