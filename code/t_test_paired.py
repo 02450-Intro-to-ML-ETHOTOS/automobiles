@@ -24,7 +24,7 @@ def t_test_paired(zA, zB, alpha = 0.05):
 
     z = zA - zB
     n = len(z)
-    z_hat = np.sum(z) / n
+    z_hat = np.sum(z) / n # z_hat is the mean difference
     # sigma^2 is the variance
     sigma_tilde_sq = np.sum((z - z_hat)**2) / n*(n-1) # TODO: why this form of the variance?
     # sqrt(sigma^2) is the std.dev., needed for computing the Std.err. of the mean, SEM
@@ -39,5 +39,5 @@ def t_test_paired(zA, zB, alpha = 0.05):
 
     return p, CI
 
-p, ci = t_test_paired(np.random.normal(0, 1, 10), np.random.normal(10, 1, 10)) # test
-print(f"p = {p}, with CI: {ci}")
+# p, ci = t_test_paired(np.random.normal(0, 1, 10), np.random.normal(10, 1, 10)) # test
+# print(f"p = {p}, with CI: {ci}")
