@@ -10,6 +10,10 @@ X_cat = X_cat.drop(body_style, axis=1)
 # convert body_style dataframe to numpy array
 y = body_style.to_numpy()
 
+# add body_style covertible to class matrix
+convertible = (1*np.all(y == 0, axis=1)).reshape((-1,1))
+y = np.append(y, convertible, axis=1)
+
 # transform numerical data of price to get mean 0 and unit variance
 X_num = raw_data[numerical_attrs].values
 X_num = X_num - (np.ones((N, 1)) * X_num.mean(axis=0))
@@ -27,6 +31,8 @@ numerical_attrs.append("price")
 #remove categorical attributes header list with "body_style" (now 10 in total)
 categorical_attrs.remove("body_style")
 
+
 # list of attribute names
 attributeNames = numerical_attrs + (X_cat.columns.values).tolist()
+
 
