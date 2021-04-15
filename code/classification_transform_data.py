@@ -20,14 +20,13 @@ numerical_attrs.append("price")
 #remove categorical attributes header list with "body_style" (now 10 in total)
 categorical_attrs.remove("body_style")
 
-
 # transform numerical data of price to get mean 0 and unit variance
 X_num = raw_data[numerical_attrs].values
 X_num = X_num - (np.ones((N, 1)) * X_num.mean(axis=0))
 X_num = X_num * (1/np.std(X_num, 0))
 
 # combine numerical and categorical data
-X = np.hstack((X_num, X_cat.values))  # 59 attributes in total
+X = np.hstack((X_num, X_cat.values))  # 60 attributes in total
 
 # set up useful variables
 N, M = X.shape
