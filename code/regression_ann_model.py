@@ -123,16 +123,15 @@ class RegressionANNModel(object):
                 # train_error[k, s] = error_train
                 test_error[k, s] = error_test
 
-        # TODO: choose optimal model
-        # finally, choose optimal parameter
-        opt_val_err = np.min(np.mean(test_error, axis=0))
-        # the parameter that gives opt_val_err
-        opt_param_idx = np.argmin(np.mean(test_error, axis=0))
-        opt_param = hidden_list[opt_param_idx]
+        # calculate mean error over k folds for each lambda
+        error_train_mean_per_lambda = np.mean(train_error, axis=0)
+        error_test_mean_per_lambda = np.mean(test_error, axis=0)
 
-        # calculate mean error over k folds for each parameter
-        # train_err_vs_lambda = np.mean(train_error, axis=0)
-        # test_err_vs_lambda = np.mean(test_error, axis=0)
+        # finally, choose optimal parameter
+        opt_val_err = np.min(error_test_mean_per_lambda)
+        # the parameter that gives opt_val_err
+        opt_param_idx = np.argmin(error_test_mean_per_lambda)
+        opt_param = hidden_list[opt_param_idx]
 
         # fit model again, using optimal parameter and all training data
         def model(): return torch.nn.Sequential(
@@ -145,15 +144,16 @@ class RegressionANNModel(object):
 
         print(
             f"Opt param {opt_param} - training model with optimal parameter on all data")
+
+        # N.B. using full dataset
         net, final_loss, learning_curve = train_ann(
-            model, loss_fn, X_train, y_train, max_iter)
+            model, loss_fn, X, y.reshape((-1, 1)), max_iter)
 
         # save best model
         self.net = net
         self.n_hidden = opt_param
 
-        return opt_param, opt_param_idx, learning_curve
-        # TODO: train_err_vs_lambda, test_err_vs_lambda, mean_w_vs_lambda
+        return opt_param, opt_param_idx, learning_curve, error_train_mean_per_lambda, error_test_mean_per_lambda
 
     def predict(self, X):
         assert(self.net is not None), "Model not trained yet!"
