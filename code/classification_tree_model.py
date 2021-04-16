@@ -73,7 +73,7 @@ class ClassificationTreeModel(object):
         
         return self.dtc.predict(X)
 
-criteria = np.arange(2,20,1)   
-tree_model = ClassificationTreeModel()    
-fit = tree_model.fit(X, y, criteria, 10)    
+#criteria = np.arange(2,20,1)   
+#tree_model = ClassificationTreeModel()    
+#fit = tree_model.fit(X, y, criteria, 10)    
 
