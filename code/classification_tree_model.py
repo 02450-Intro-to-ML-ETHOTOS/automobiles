@@ -50,12 +50,18 @@ class ClassificationTreeModel(object):
         error_train_mean = np.mean(Error_train, axis=0)
         error_test_mean = np.mean(Error_test, axis=0)
 
-        # finally, choose max_depth
-        # min of mean validation error over K folds is optimal
+        # finally, choose best criterion based on min of mean validation error over K folds
         opt_val_err = np.min(error_test_mean)
         # the lambda that gives opt_val_err
         opt_criteria_idx = np.argmin(error_test_mean)
         opt_criteria = tc[opt_criteria_idx]
+
+        # fit model again, using optimal lambda
+        # this is what is done in ex8_1_1.py
+        # define model with appropriate regularization strength
+        dtc = tree.DecisionTreeClassifier(criterion='gini', max_depth=opt_criteria, 
+                                          class_weight = 'balanced')
+        dtc.fit(X, y) # N.B. we train with ALL data
 
         self.dtc = dtc
         self.criteria_opt = opt_criteria
@@ -67,7 +73,7 @@ class ClassificationTreeModel(object):
         
         return self.dtc.predict(X)
 
-"criteria = np.arange(2,20,1)   
-"tree_model = ClassificationTreeModel()    
-"tree_model.fit(X, y, criteria, 10)    
+criteria = np.arange(2,20,1)   
+tree_model = ClassificationTreeModel()    
+fit = tree_model.fit(X, y, criteria, 10)    
 
