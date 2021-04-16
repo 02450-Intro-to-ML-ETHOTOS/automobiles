@@ -6,8 +6,8 @@ def onehot2classidx(y):
     classes = [np.argmax(enc) for enc in y]
     return np.array(classes)
 
-class ClassificationLogisticRegressionModel(object):
-    """A simple baseline model which simply predicts the mean of y"""
+class ClassificationTreeModel(object):
+    """A multi-class classification tree model"""
     def __init__(self):
         self.mdl = None
         self.lambda_opt = None
