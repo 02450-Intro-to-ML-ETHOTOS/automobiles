@@ -1,8 +1,11 @@
 import numpy as np
 import scipy.stats as st
 
-def mcnemar(y_true, yhatA, yhatB, alpha=0.05):
-    # perform McNemars test
+def mcnemar(y_true, yhatA, yhatB, alpha=0.05, verbose=False):
+    """McNemar's test
+
+    Modified from implementation in toolbox_02450
+    """
     nn = np.zeros((2,2))
     c1 = yhatA - y_true == 0
     c2 = yhatB - y_true == 0
@@ -27,19 +30,21 @@ def mcnemar(y_true, yhatA, yhatB, alpha=0.05):
     CI = tuple(lm * 2 - 1 for lm in st.beta.interval(1-alpha, a=p, b=q))
 
     p = 2*st.binom.cdf(min([n12,n21]), n=n12+n21, p=0.5)
-    print("Result of McNemars test using alpha=", alpha)
-    print("Comparison matrix n")
-    print(nn)
+    if verbose:
+        print(f"Result of McNemars test using alpha = {alpha}")
+        print("Comparison matrix n")
+        print(nn)
     if n12+n21 <= 10:
         print("Warning, n12+n21 is low: n12+n21=",(n12+n21))
 
-    print(f"Approximate 1-alpha confidence interval of theta: [thetaL,thetaU] = {CI}")
-    print(f"p-value for two-sided test A and B have same accuracy (exact binomial test): p={p}")
+    if verbose:
+        print(f"Approximate 1-alpha confidence interval of theta: [thetaL,thetaU] = {CI}")
+        print(f"p-value for two-sided test A and B have same accuracy (exact binomial test): p = {p}")
 
-    return p, CI, thetahat
+    return p, CI, thetahat, nn
 
 # test
 # y = np.array([0, 1, 3, 1, 2])
 # yA = np.array([2, 1, 0, 1, 2])
 # yB = np.array([0, 1, 3, 1, 0])
-# mcnemar(y, yA, yB, 0.05)
+# mcnemar(y, yA, yB, 0.05, True)
