@@ -9,7 +9,7 @@ import torch
 from pprint import pprint
 import scipy.stats as st
 from itertools import combinations
-
+import json
 
 
 # set up data structures for storing errors and parameters using dict comprehension
@@ -25,7 +25,7 @@ def evaluate_model(model, X, y):
     return error_squared
 
 # set up cross validation for outer folds
-K = 2
+K = 10
 # we set random_state to ensure reproducibility
 CV = model_selection.KFold(K, shuffle=True, random_state=42)
 for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate to get index k
@@ -48,17 +48,18 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     # baseline model
     basic_model = RegressionBaselineModel()
     basic_model.fit(y_train)
+    model_parameters["B"].append(basic_model.y_pred)
     model_errors_test["B"].append(evaluate_model(basic_model, X_test, y_test))
 
     # ridge regression model
-    lambdas = np.logspace(-2, 2, 4) # np.logspace(-2, 2, 32)
+    lambdas = np.logspace(-2, 2, 32) # np.logspace(-2, 2, 4) # np.logspace(-2, 2, 32)
     rr_model = RidgeRegressionModel()
     rr_model.fit(X_train, y_train, lambdas, 10)
     model_parameters["RR"].append(rr_model.lambda_opt)
     model_errors_test["RR"].append(evaluate_model(rr_model, X_test, y_test))
 
     # ann model
-    n_hidden = [1, 16] # , 64, 128, 256, 512
+    n_hidden = [1, 16, 64, 128, 256, 512] # , 64, 128, 256, 512
     ann_model = RegressionANNModel()
     ann_model.fit(torch.Tensor(X_train), torch.Tensor(y_train), n_hidden, 10, max_iter=3000)
     model_errors_test["ANN"].append(evaluate_model(ann_model, torch.Tensor(X_test), y_test))
@@ -74,6 +75,7 @@ pprint(model_parameters)
 # statistical comparison - setup I - paired t-test
 # N.B. Include p-values and conﬁdence intervals for the three pairwise tests
 model_combinations = list(combinations(models, 2))
+tests = {}
 
 for mA, mB in model_combinations:
     print(f"Comparing: {mA} and {mB}")
@@ -90,4 +92,15 @@ for mA, mB in model_combinations:
         print(f"H1: models {mA} and {mB} have different performance, Z != 0")
     else: # p >= 0.05
         print(f"H0: models {mA} and {mB} have the same performance, Z = 0")
+
+    # 4) save results
+    tests[f"{mA}-vs-{mB}"] = {"p": p, "CI": ci}
+
+
+# dump output of comparison
+with open('../out/model_comparisons/regression.json', 'w') as fp:
+    data = {"errors_test": model_errors_test, 
+            "parameters": {k: [float(e) for e in l] for k,l in model_parameters.items()},
+            "statistical_tests": tests}
+    json.dump(data, fp, sort_keys=True, indent=4)
 
