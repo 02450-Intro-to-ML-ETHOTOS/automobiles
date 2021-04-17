@@ -23,8 +23,9 @@ class ClassificationTreeModel(object):
         CV = model_selection.KFold(n_splits=K,shuffle=True)
 
         # Initialize variable
-        Error_train = np.empty((len(tc),K))
-        Error_test = np.empty((len(tc),K))
+        S = len(tc)
+        Error_train = np.empty((K,S))
+        Error_test = np.empty((K,S))
 
         k=0
         for train_index, test_index in CV.split(X):
@@ -43,7 +44,7 @@ class ClassificationTreeModel(object):
                 # Evaluate misclassification rate over train/test data (in this CV fold)
                 misclass_rate_test = np.sum(y_est_test != y_test) / float(len(y_est_test))
                 misclass_rate_train = np.sum(y_est_train != y_train) / float(len(y_est_train))
-                Error_test[i,k], Error_train[i,k] = misclass_rate_test, misclass_rate_train
+                Error_test[k,i], Error_train[k,i] = misclass_rate_test, misclass_rate_train
             k+=1
 
         # calculate mean error over k folds for each split/optimization criterion
