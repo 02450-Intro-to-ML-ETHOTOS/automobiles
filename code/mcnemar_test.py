@@ -36,7 +36,7 @@ def mcnemar(y_true, yhatA, yhatB, alpha=0.05):
     print(f"Approximate 1-alpha confidence interval of theta: [thetaL,thetaU] = {CI}")
     print(f"p-value for two-sided test A and B have same accuracy (exact binomial test): p={p}")
 
-    return thetahat, CI, p
+    return p, CI, thetahat
 
 # test
 # y = np.array([0, 1, 3, 1, 2])
