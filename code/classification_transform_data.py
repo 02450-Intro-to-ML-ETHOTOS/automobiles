@@ -37,4 +37,4 @@ N, M = X.shape
 # list of attribute names
 attributeNames = numerical_attrs + (X_cat.columns.values).tolist()
 
-
+idx2class = dict(zip(range(len(class_names)),class_names))
