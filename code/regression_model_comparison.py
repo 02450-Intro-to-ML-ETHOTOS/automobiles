@@ -29,6 +29,8 @@ K = 2
 # we set random_state to ensure reproducibility
 CV = model_selection.KFold(K, shuffle=True, random_state=42)
 for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate to get index k
+    print(f"Outer CV fold: {k+1}/{K}")
+    # TODO: should we normalize internally? Mention in report
     # Let Dk^train, Dk^test be the k'th split of D
     # extract training and test set for current CV fold
     X_train = X[train_index]
@@ -49,14 +51,14 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     model_errors_test["B"].append(evaluate_model(basic_model, X_test, y_test))
 
     # ridge regression model
-    lambdas = np.logspace(-2, 2, 32)
+    lambdas = np.logspace(-2, 2, 4) # np.logspace(-2, 2, 32)
     rr_model = RidgeRegressionModel()
     rr_model.fit(X_train, y_train, lambdas, 10)
     model_parameters["RR"].append(rr_model.lambda_opt)
     model_errors_test["RR"].append(evaluate_model(rr_model, X_test, y_test))
 
     # ann model
-    n_hidden = [1, 16, 32] # , 64, 128, 256, 512
+    n_hidden = [1, 16] # , 64, 128, 256, 512
     ann_model = RegressionANNModel()
     ann_model.fit(torch.Tensor(X_train), torch.Tensor(y_train), n_hidden, 10, max_iter=3000)
     model_errors_test["ANN"].append(evaluate_model(ann_model, torch.Tensor(X_test), y_test))
@@ -87,5 +89,5 @@ for mA, mB in model_combinations:
     if p < 0.05:
         print(f"H1: models {mA} and {mB} have different performance, Z != 0")
     else: # p >= 0.05
-        print(f"H0: models {mA} and {mB} have the same perforamnce, Z = 0")
+        print(f"H0: models {mA} and {mB} have the same performance, Z = 0")
 
