@@ -9,6 +9,7 @@ class ClassificationBaselineModel(object):
         self.y_pred = None
 
     def fit(self, y):
+        print("Fitting", type(self).__name__)
         # TODO: use K-fold CV?
         # count occourences of each class
         counts = y.sum(axis=0)

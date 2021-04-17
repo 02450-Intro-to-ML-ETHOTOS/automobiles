@@ -19,7 +19,7 @@ def train_ann(model, loss_func, X, y, max_iter):
     loss_final = 1e6
     logging_frequency = 1000  # display the loss every 1000th iteration
 
-    print("Training\n\tIter.\tLoss")
+    print("\tTraining\n\tIter.\tLoss")
     for i in range(max_iter):
         y_est = net(X)  # forward pass, predict labels on training set
         loss = loss_func(y_est, y)  # determine loss
@@ -38,9 +38,7 @@ def train_ann(model, loss_func, X, y, max_iter):
             msg = f"\t{str(i+1)}/{max_iter}\t{loss_value}"
             print(msg)
 
-    print("\tFinal loss:")
-    msg = f"\t{str(i+1)}\t{loss_value}"
-    print(msg)
+    print(f"\tFinal loss:\t{loss_final}")
 
     return net, loss_final, learning_curve
 
@@ -53,6 +51,8 @@ class RegressionANNModel(object):
         self.n_hidden = None
 
     def fit(self, X, y, hidden_list, K, max_iter=10000):
+        print("Fitting", type(self).__name__)
+
         N, M = X.shape
 
         # the number of models
@@ -78,7 +78,7 @@ class RegressionANNModel(object):
         # do cross-validation steps
         # Iterate over k=1,...,K splits
         for k, (train_index, test_index) in enumerate(CV.split(X, y)):
-            # print(f"CV Fold: {k+1}/{K}")
+            print(f"\tFit CV Fold: {k+1}/{K}")
 
             # Let Dk^train, Dk^test be the k'th split of D
             # extract training and test set for current CV fold
@@ -143,7 +143,7 @@ class RegressionANNModel(object):
         )
 
         print(
-            f"Opt param {opt_param} - training model with optimal parameter on all data")
+            f"\tOpt param {opt_param} - training model with optimal parameter on all data")
 
         # N.B. using full dataset
         net, final_loss, learning_curve = train_ann(

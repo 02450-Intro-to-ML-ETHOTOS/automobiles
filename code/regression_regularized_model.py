@@ -9,6 +9,8 @@ class RidgeRegressionModel(object):
         self.opt_lambda = None
 
     def fit(self, X, y, lambdas, K):
+        print("Fitting", type(self).__name__)
+        
         N, M = X.shape
 
         # the number of models
@@ -27,6 +29,7 @@ class RidgeRegressionModel(object):
         # do cross-validation steps
         # Iterate over k=1,...,K splits
         for k, (train_index, test_index) in enumerate(CV.split(X, y)):
+            print(f"\tFit CV Fold: {k+1}/{K}")
             # print(f"CV Fold: {k+1}/{K}")
 
             # Let Dk^train, Dk^test be the k'th split of D

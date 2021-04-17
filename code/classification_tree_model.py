@@ -13,6 +13,7 @@ class ClassificationTreeModel(object):
         self.criteria_opt = None
         
     def fit(self, X, y, criteria, K):
+        print("Fitting", type(self).__name__)
         if len(y.shape) != 1:
             # sklearn linear_model expects no one-hot encoding
             y = onehot2classidx(y)
@@ -29,6 +30,7 @@ class ClassificationTreeModel(object):
 
         k=0
         for train_index, test_index in CV.split(X):
+            print(f"\tFit CV Fold: {k+1}/{K}")
 
             # extract training and test set for current CV fold
             X_train, y_train= X[train_index,:], y[train_index]

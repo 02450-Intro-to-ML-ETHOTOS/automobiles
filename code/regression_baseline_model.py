@@ -8,6 +8,7 @@ class RegressionBaselineModel(object):
         self.y_pred = None
 
     def fit(self, y):
+        print("Fitting", type(self).__name__)
         # TODO: use K-fold CV
         self.y_pred = y.mean()
 
