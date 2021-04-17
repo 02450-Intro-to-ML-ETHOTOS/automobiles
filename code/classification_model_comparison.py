@@ -8,6 +8,7 @@ from mcnemar_test import mcnemar
 from pprint import pprint
 import scipy.stats as st
 from itertools import combinations
+import json
 
 # set up data structures for storing errors and parameters using dict comprehension
 models = ["B", "RLR", "CT"] # baseline, Regularized Logistic Regresison, Classification Tree
@@ -24,7 +25,7 @@ def evaluate_model(model, X, y):
     return error_rate
 
 # set up cross validation for outer folds
-K = 2
+K = 10
 # we set random_state to ensure reproducibility
 CV = model_selection.KFold(K, shuffle=True, random_state=42)
 for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate to get index k
@@ -52,7 +53,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     model_predictions["B"].append(base_model.predict(X_test))
 
     # regularized logistic regression model
-    lambdas = np.logspace(-2, 2, 4) # np.logspace(-2, 2, 32)
+    lambdas = np.logspace(-2, 2, 32)
     rlr_model = ClassificationLogisticRegressionModel()
     rlr_model.fit(X_train, y_train, lambdas, 10)
     model_parameters["RLR"].append(rlr_model.lambda_opt)
@@ -60,11 +61,11 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     model_predictions["RLR"].append(rlr_model.predict(X_test))
 
     # classification tree model
-    criteria = np.arange(2, 4, 1) # np.arange(2, 20, 1)
+    criteria = np.arange(2, 20, 1)
     ct_model = ClassificationTreeModel()    
     ct_model.fit(X_train, y_train, criteria, 10)
-    model_errors_test["CT"].append(evaluate_model(ct_model, X_test, y_test))
     model_parameters["CT"].append(ct_model.criteria_opt)
+    model_errors_test["CT"].append(evaluate_model(ct_model, X_test, y_test))
     model_predictions["CT"].append(ct_model.predict(X_test))
 
 # print(f"Model errors across {K} outer folds:")
@@ -81,8 +82,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
 alpha = 0.05
 model_combinations = list(combinations(models, 2))
 model_combinations = model_combinations + [(b,a) for a,b in model_combinations]
-model_combinations = [("B", "RLR"), ("RLR", "B")]
-
+tests = {}
 
 for mA, mB in model_combinations:
     print(f"Comparing: {mA} and {mB}")
@@ -105,4 +105,15 @@ for mA, mB in model_combinations:
         print(f"Positive theta: {mA} is preferable over {mB}")
     else:
         print(f"Negative theta: {mB} is preferable over {mA}")
+
+    # 4) save results
+    tests[f"{mA}-vs-{mB}"] = {"p": p, "theta": theta, "CI": ci, "nn": nn.tolist()}
+
+
+# dump output of comparison
+with open('../out/model_comparisons/classification.json', 'w') as fp:
+    data = {"errors_test": model_errors_test, 
+            "parameters": {k: [float(e) for e in l] for k,l in model_parameters.items()},
+            "statistical_tests": tests}
+    json.dump(data, fp, sort_keys=True, indent=4)
 
