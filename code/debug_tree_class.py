@@ -9,7 +9,7 @@ classes = [np.argmax(enc) for enc in y]
 y = np.array(classes)
 
 # Tree complexity parameter - constraint on maximum depth
-tc = np.arange(2,25, 1)
+tc = np.arange(2,22,1)
 
 # K-fold crossvalidation
 K = 10
@@ -48,8 +48,8 @@ for train_index, test_index in CV.split(X):
     k+=1
 
 # calculate mean error over k folds for each split/optimization criterion
-error_train_mean = np.mean(Error_train, axis=0)
-error_test_mean = np.mean(Error_test, axis=0)
+error_train_mean = np.mean(Error_train, axis=1)
+error_test_mean = np.mean(Error_test, axis=1)
 
 # finally, choose max_depth
 # min of mean validation error over K folds is optimal
