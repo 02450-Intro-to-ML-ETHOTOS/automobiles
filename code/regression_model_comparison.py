@@ -17,7 +17,7 @@ models = ["B", "ANN", "RR"] # baseline, artificial neural network, ridge regress
 # this will make a dict with a list for each model to contain the test error for each fold
 model_errors_test = {m: [] for m in models}
 model_parameters = {m: [] for m in models}
-
+model_predictions = {m: [] for m in models}
 
 def evaluate_model(model, X, y):
     y_pred = model.predict(X)
@@ -46,31 +46,34 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     # 4) save error and parameter
 
     # baseline model
-    basic_model = RegressionBaselineModel()
-    basic_model.fit(y_train)
-    model_parameters["B"].append(basic_model.y_pred)
-    model_errors_test["B"].append(evaluate_model(basic_model, X_test, y_test))
+    base_model = RegressionBaselineModel()
+    base_model.fit(y_train)
+    model_parameters["B"].append(base_model.y_pred)
+    model_errors_test["B"].append(evaluate_model(base_model, X_test, y_test))
+    model_predictions["B"].append(base_model.predict(X_test))
 
     # ridge regression model
-    lambdas = np.logspace(-2, 2, 32) # np.logspace(-2, 2, 4) # np.logspace(-2, 2, 32)
+    lambdas = np.logspace(-2, 1, 32) # np.logspace(-2, 2, 4) # np.logspace(-2, 2, 32)
     rr_model = RidgeRegressionModel()
     rr_model.fit(X_train, y_train, lambdas, 10)
     model_parameters["RR"].append(rr_model.lambda_opt)
     model_errors_test["RR"].append(evaluate_model(rr_model, X_test, y_test))
-
+    model_predictions["RR"].append(rr_model.predict(X_test))
+    
     # ann model
-    n_hidden = [1, 16, 64, 128, 256, 512] # , 64, 128, 256, 512
+    n_hidden = [1, 16, 256, 512] # , 256, 512, 64, 128, 256, 512, 4096
     ann_model = RegressionANNModel()
-    ann_model.fit(torch.Tensor(X_train), torch.Tensor(y_train), n_hidden, 10, max_iter=3000)
+    ann_model.fit(torch.Tensor(X_train), torch.Tensor(y_train), n_hidden, 10, max_iter=5000)
     model_errors_test["ANN"].append(evaluate_model(ann_model, torch.Tensor(X_test), y_test))
     model_parameters["ANN"].append(ann_model.n_hidden)
+    model_predictions["ANN"].append(ann_model.predict(torch.Tensor(X_test)))
 
 
-print(f"Model errors across {K} outer folds:")
-pprint(model_errors_test)
+# print(f"Model errors across {K} outer folds:")
+# pprint(model_errors_test)
 
-print(f"Model parameters across {K} outer folds:")
-pprint(model_parameters)
+# print(f"Model parameters across {K} outer folds:")
+# pprint(model_parameters)
 
 # statistical comparison - setup I - paired t-test
 # N.B. Include p-values and conﬁdence intervals for the three pairwise tests
@@ -80,8 +83,8 @@ tests = {}
 for mA, mB in model_combinations:
     print(f"Comparing: {mA} and {mB}")
     # 1) extract errors
-    zA = np.array(model_errors_test[mA])
-    zB = np.array(model_errors_test[mB])
+    zA = np.concatenate(model_predictions[mA])
+    zB = np.concatenate(model_predictions[mB])
 
     # 2) feed to t_test func
     p, ci = t_test_paired(zA, zB)
