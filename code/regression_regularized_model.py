@@ -87,16 +87,20 @@ class RidgeRegressionModel(object):
                 # L' = ||y - y_pred||^2 + λ||w||^2
                 # L' = ||y - (wTx)||^2 + λ(wTw)
                 # L' = (y - y_pred)T(y - y_pred) + λ(wTw)
-                # we could in fact skip the penalty term, as the sq error still depends on lambda
-                wTw = w_star.T @ w_star
+                # we skip the penalty term, as in the exercises, as the sq error still depends on lambda
+                # wTw = w_star.T @ w_star
 
                 y_delta_train = y_train - y_train_pred
+                N_y_train = len(y_delta_train)
                 # divide by N observations to get the mean for the fold
-                error_train = np.power(y_train-X_train @ w_star.T, 2).mean(axis=0)
-                # error_train = (y_delta_train.T @ y_delta_train)  # + lamb * wTw
+                # error_train = np.power(y_delta_train, 2).mean(axis=0)
+                error_train = (y_delta_train.T @ y_delta_train)/N_y_train  # + lamb * wTw
 
                 y_delta_test = y_test - y_test_pred
-                error_test = (y_delta_test.T @ y_delta_test)/N  # + lamb * wTw
+                N_y_test = len(y_delta_test)
+                # error_test = np.power(y_test - X_test @ w_star.T, 2).mean(axis=0)
+                error_test = (y_delta_test.T @ y_delta_test)/N_y_test  # + lamb * wTw
+
 
                 # store results
                 # recall: k=fold, s=model
