@@ -6,10 +6,10 @@ from classification_transform_data import *
 class ClassificationBaselineModel(object):
     """A simple baseline model which simply predicts the class with highest frequency"""
     def __init__(self):
-        self.w_star = None
-        self.opt_lambda = None
+        self.y_pred = None
 
     def fit(self, y):
+        print("Fitting", type(self).__name__)
         # TODO: use K-fold CV?
         # count occourences of each class
         counts = y.sum(axis=0)
@@ -23,7 +23,7 @@ class ClassificationBaselineModel(object):
         assert(self.y_pred is not None), "Model not trained yet!"
         
         y_pred = np.array([self.y_pred] * X.shape[0])
-        return y_pred
+        return y_pred.squeeze()
 
 
 # test      

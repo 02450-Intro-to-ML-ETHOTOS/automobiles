@@ -6,13 +6,15 @@ def onehot2classidx(y):
     classes = [np.argmax(enc) for enc in y]
     return np.array(classes)
 
-class ClassificationTreeModel(object):
-    """A multi-class classification tree model"""
+class ClassificationLogisticRegressionModel(object):
+    """A regularized logistic regression model"""
     def __init__(self):
         self.mdl = None
         self.lambda_opt = None
 
     def fit(self, X, y, lambdas, K):
+        print("Fitting", type(self).__name__)
+
         if len(y.shape) != 1:
             # sklearn linear_model expects no one-hot encoding
             y = onehot2classidx(y)
@@ -35,7 +37,7 @@ class ClassificationTreeModel(object):
         # do cross-validation steps
         # Iterate over k=1,...,K splits
         for k, (train_index, test_index) in enumerate(CV.split(X, y)):
-            # print(f"CV Fold: {k+1}/{K}")
+            print(f"\tFit CV Fold: {k+1}/{K}")
 
             # Let Dk^train, Dk^test be the k'th split of D
             # extract training and test set for current CV fold
