@@ -7,7 +7,7 @@ from regression_transform_data import *
 from regression_regularized_model import *
 
 from matplotlib.pylab import (figure, semilogx, loglog, xlabel, ylabel, legend,
-                              title, subplot, show, grid, savefig)
+                              title, subplot, show, grid, axvline, savefig)
 
 
 # goal: choose a reasonable range of values of lambda
@@ -29,14 +29,15 @@ print('- CV Test error (squared):     {0}'.format(test_err_vs_lambda[opt_lambda_
 # plots
 figure(figsize=(12, 8))
 # subplot(1, 2, 1)
-semilogx(lambdas, mean_w_vs_lambda[:, 1:], '.-')  # Don't plot the bias term
+semilogx(lambdas, mean_w_vs_lambda[:, :], '.-')  # exercise: Don't plot the bias term, but we have no bias term
+axvline(x=opt_lambda, c="red", ls="--")
 title("Mean coefficient as function of lambda")
 xlabel('Regularization factor')
 ylabel('Mean Coefficient Values')
 grid()
 # You can choose to display the legend, but it's omitted for a cleaner
 # plot, since there are many attributes
-legend(attributeNames, bbox_to_anchor=(1.05, 1), loc='upper left', ncol=2) # uncomment to enable legend - though it does not fit on screen
+legend(attributeNames + ["Optimal lambda"], bbox_to_anchor=(1.05, 1), loc='upper left', ncol=2) # uncomment to enable legend - though it does not fit on screen
 # show()
 savefig(f"../out/plots/regression_regularized_mean_coefs.png", dpi=200, bbox_inches='tight')
 
@@ -45,9 +46,10 @@ figure(figsize=(12, 8))
 title('Squared Error as function of lambda - optimal lambda: 1e{0}'.format(np.log10(opt_lambda)))
 loglog(lambdas, train_err_vs_lambda.T, 'b.-',
        lambdas, test_err_vs_lambda.T, 'r.-')
+axvline(x=opt_lambda, label=f"Optimal lambda = {opt_lambda}", c="red", ls="--")
 xlabel('Regularization factor')
 ylabel('Squared error (crossvalidation)')
-legend(['Train error', 'Validation error'])
+legend(['Train error', 'Validation error', "Optimal Lambda"])
 grid()
 
 # show()
