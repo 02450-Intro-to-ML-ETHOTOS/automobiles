@@ -57,7 +57,7 @@ class RidgeRegressionModel(object):
                 lamb = lambdas[s]
                 lambdaI = lamb * np.eye(M)
                 # TODO: but M is number of attributes, so should be M+1?
-                lambdaI[0, 0] = 0  # remove bias regularization
+                # lambdaI[0, 0] = 0  # remove bias regularization, except we don't have a bias
 
                 # Calculate w*
                 # TOS: in the exercises, they use linalg solve, but why do that,
