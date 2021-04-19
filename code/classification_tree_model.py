@@ -47,8 +47,8 @@ class ClassificationTreeModel(object):
             k+=1
 
         # calculate mean error over k folds for each split/optimization criterion
-        error_train_mean = np.mean(Error_train, axis=0)
-        error_test_mean = np.mean(Error_test, axis=0)
+        error_train_mean = np.mean(Error_train, axis=1)
+        error_test_mean = np.mean(Error_test, axis=1)
 
         # finally, choose best criteria based on min of mean validation error over K folds
         opt_val_err = np.min(error_test_mean)
@@ -74,4 +74,6 @@ class ClassificationTreeModel(object):
 #criteria = np.arange(2,20,1)   
 #tree_model = ClassificationTreeModel()    
 #fit = tree_model.fit(X, y, criteria, 10)    
+
+
 
