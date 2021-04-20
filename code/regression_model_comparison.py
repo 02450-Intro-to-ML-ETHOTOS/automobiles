@@ -18,6 +18,7 @@ models = ["B", "ANN", "RR"] # baseline, artificial neural network, ridge regress
 model_errors_test = {m: [] for m in models}
 model_parameters = {m: [] for m in models}
 model_predictions = {m: [] for m in models}
+ys = []
 
 def evaluate_model(model, X, y):
     y_pred = model.predict(X)
@@ -37,6 +38,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     y_train = y[train_index]
     X_test = X[test_index]
     y_test = y[test_index]
+    ys.append(y_test)
     N_test, M_test = X_test.shape
 
     # general workflow for each model
@@ -61,9 +63,9 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     model_predictions["RR"].append(rr_model.predict(X_test))
     
     # ann model
-    n_hidden = [1, 16, 256, 512] # , 256, 512, 64, 128, 256, 512, 4096
+    n_hidden = [1, 16, 128] # , 256, 512, 64, 128, 256, 512, 4096
     ann_model = RegressionANNModel()
-    ann_model.fit(torch.Tensor(X_train), torch.Tensor(y_train), n_hidden, 10, max_iter=5000)
+    ann_model.fit(torch.Tensor(X_train), torch.Tensor(y_train), n_hidden, 10, max_iter=4000)
     model_errors_test["ANN"].append(evaluate_model(ann_model, torch.Tensor(X_test), y_test))
     model_parameters["ANN"].append(ann_model.n_hidden)
     model_predictions["ANN"].append(ann_model.predict(torch.Tensor(X_test)))
@@ -107,3 +109,13 @@ with open('../out/model_comparisons/regression.json', 'w') as fp:
             "statistical_tests": tests}
     json.dump(data, fp, sort_keys=True, indent=4)
 
+
+import pandas as pd
+# save error rates
+df = pd.DataFrame({"B": model_errors_test["B"], "RR": model_errors_test["RR"], "ANN": model_errors_test["ANN"]})
+df.to_csv("../out/model_comparisons/regression_errors.csv")
+
+# save predictions
+ys = np.concatenate(ys)
+df = pd.DataFrame({"Y": np.concatenate(ys), "B":np.concatenate(model_predictions["B"]), "RR":np.concatenate(model_predictions["RR"]), "ANN":np.concatenate(model_predictions["ANN"])})
+df.to_csv("../out/model_comparisons/regression_predictions.csv")

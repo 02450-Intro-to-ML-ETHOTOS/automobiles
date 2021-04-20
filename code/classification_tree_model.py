@@ -21,7 +21,7 @@ class ClassificationTreeModel(object):
         # Tree complexity parameter - constraint on maximum depth
         tc = criteria
 
-        CV = model_selection.KFold(n_splits=K,shuffle=True)
+        CV = model_selection.KFold(n_splits=K, shuffle=True, random_state=42)
 
         # Initialize variable
         S = len(tc)
