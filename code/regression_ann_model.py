@@ -114,8 +114,7 @@ class RegressionANNModel(object):
                 y_test_pred = net(X_test).detach().numpy()
 
                 y_delta_test = y_test.numpy() - y_test_pred
-                error_test = (y_delta_test.T @ y_delta_test) / \
-                    N  # TODO: alternative?
+                error_test = (y_delta_test.T @ y_delta_test) / len(y_delta_test)
                 # error_test = y_delta_test**2
 
                 # store results
