@@ -116,6 +116,5 @@ df = pd.DataFrame({"B": model_errors_test["B"], "RR": model_errors_test["RR"], "
 df.to_csv("../out/model_comparisons/regression_errors.csv")
 
 # save predictions
-ys = np.concatenate(ys)
 df = pd.DataFrame({"Y": np.concatenate(ys), "B":np.concatenate(model_predictions["B"]), "RR":np.concatenate(model_predictions["RR"]), "ANN":np.concatenate(model_predictions["ANN"])})
 df.to_csv("../out/model_comparisons/regression_predictions.csv")
