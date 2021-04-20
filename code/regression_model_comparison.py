@@ -112,7 +112,7 @@ with open('../out/model_comparisons/regression.json', 'w') as fp:
 
 import pandas as pd
 # save error rates
-df = pd.DataFrame({"B":np.concatenate(model_errors_test["B"]), "RR":np.concatenate(model_errors_test["RR"]), "ANN":np.concatenate(model_errors_test["ANN"])})
+df = pd.DataFrame({"B": model_errors_test["B"], "RR": model_errors_test["RR"], "ANN": model_errors_test["ANN"]})
 df.to_csv("../out/model_comparisons/regression_errors.csv")
 
 # save predictions
