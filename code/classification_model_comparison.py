@@ -16,6 +16,7 @@ models = ["B", "RLR", "CT"] # baseline, Regularized Logistic Regresison, Classif
 model_errors_test = {m: [] for m in models}
 model_parameters = {m: [] for m in models}
 model_predictions = {m: [] for m in models}
+ys = []
 
 y = onehot2classidx(y)
 
@@ -37,6 +38,7 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
     y_train = y[train_index]
     X_test = X[test_index]
     y_test = y[test_index]
+    ys.append(y_test)
     N_test, M_test = X_test.shape
 
     # general workflow for each model
@@ -81,8 +83,9 @@ for k, (train_index, test_index) in enumerate(CV.split(X, y)): # use enumerate t
 # statistical comparison - setup I - McNemar's test
 alpha = 0.05
 model_combinations = list(combinations(models, 2))
-model_combinations = model_combinations + [(b,a) for a,b in model_combinations]
+model_combinations = model_combinations
 tests = {}
+ys = np.concatenate(ys)
 
 for mA, mB in model_combinations:
     print(f"Comparing: {mA} and {mB}")
@@ -91,7 +94,7 @@ for mA, mB in model_combinations:
     yB = np.concatenate(model_predictions[mB])
 
     # 2) feed to test func
-    p, ci, theta, nn = mcnemar(y, yA, yB, alpha)
+    p, ci, theta, nn = mcnemar(ys, yA, yB, alpha)
     print(f"p = {p}, theta = {theta}, with CI = {ci}")
     print("Comparison matrix n\n", nn)
 
@@ -117,3 +120,11 @@ with open('../out/model_comparisons/classification.json', 'w') as fp:
             "statistical_tests": tests}
     json.dump(data, fp, sort_keys=True, indent=4)
 
+
+# save error rates
+df = pd.DataFrame({"B": model_errors_test["B"], "RLR": model_errors_test["RLR"], "CT": model_errors_test["CT"]})
+df.to_csv("../out/model_comparisons/classification_errors.csv")
+
+# save predictions
+df = pd.DataFrame({"Y": ys, "B":np.concatenate(model_predictions["B"]), "RLR": np.concatenate(model_predictions["RLR"]), "CT":np.concatenate(model_predictions["CT"])})
+df.to_csv("../out/model_comparisons/classification_predictions.csv")
