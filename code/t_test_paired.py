@@ -35,7 +35,7 @@ def t_test_paired(zA, zB, alpha = 0.05):
     p = 2 * (1 - st.t.cdf(np.abs( z_hat / sem ), df=n-1)) # TODO: ask TA about the df?
     
     # in scipy.stats, loc is the mean and scale is the std.dev.
-    CI = st.t.interval(1-alpha, df=n-1, loc=z_hat, scale=sigma_hat)  # Confidence interval
+    CI = st.t.interval(1-alpha, df=n-1, loc=z_hat, scale=sem)  # Confidence interval
 
     return p, CI
 
