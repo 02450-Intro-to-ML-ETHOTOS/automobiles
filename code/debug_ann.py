@@ -11,7 +11,7 @@ from scipy import stats
 import torch
 from toolbox_local import train_neural_net, draw_neural_net
 
-n_hidden_units = 256                  # number of hidden units
+n_hidden_units = 256                # number of hidden units
 n_replicates = 1                    # number of networks trained in each k-fold
 max_iter = 10000
 

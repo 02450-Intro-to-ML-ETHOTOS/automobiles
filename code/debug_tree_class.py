@@ -33,7 +33,7 @@ for train_index, test_index in CV.split(X):
     #                         y_test[:,4].reshape((-1,1)).T), axis = 0)
     
     for i, t in enumerate(tc):
-        # Fit decision tree classifier, Gini/Entropy split criterion, different pruning level
+        # Fit decision tree classifier, Gini/Entropy split criterion,
         # can also use "min_samples_split" and "min_samples_leaf" as stop criteria
         dtc = tree.DecisionTreeClassifier(criterion='gini', max_depth=t, class_weight = 'balanced')
         #dtc = tree.DecisionTreeClassifier(criterion='entropy', max_depth=t)

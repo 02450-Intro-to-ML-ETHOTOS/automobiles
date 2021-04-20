@@ -37,7 +37,7 @@ class ClassificationTreeModel(object):
             X_test, y_test= X[test_index,:], y[test_index]
 
             for i, t in enumerate(tc):
-                # Fit decision tree classifier, Gini/Entropy split criterion, different pruning level
+                # Fit decision tree classifier, Gini/Entropy split criterion
                 # can also use "min_samples_split"/"min_samples_leaf" as stop criteria
                 dtc = tree.DecisionTreeClassifier(criterion='gini', max_depth=t, class_weight = 'balanced')
                 dtc = dtc.fit(X_train,y_train)

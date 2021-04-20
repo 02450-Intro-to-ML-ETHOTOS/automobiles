@@ -1,5 +1,6 @@
 from regression_transform_data import *
-# imports: numpy as np, pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np, pandas as pd
 import torch
 
 
@@ -152,6 +153,19 @@ class RegressionANNModel(object):
         self.net = net
         self.n_hidden = opt_param
 
+        plt.figure(figsize=(10,10))
+        y_est = y_test_pred.data.numpy(); y_true = y_test.data.numpy()
+        axis_range = [np.min([y_est, y_true])-1,np.max([y_est, y_true])+1]
+        plt.plot(axis_range,axis_range,'k--')
+        plt.plot(y_true, y_est,'ob',alpha=.25)
+        plt.legend(['Perfect estimation','Model estimations'])
+        plt.title('Car price: estimated versus true value (for last CV-fold)')
+        plt.ylim(axis_range); plt.xlim(axis_range)
+        plt.xlabel('True value')
+        plt.ylabel('Estimated value')
+        plt.grid()
+        plt.show()
+
         return opt_param, opt_param_idx, learning_curve, error_train_mean_per_lambda, error_test_mean_per_lambda
 
     def predict(self, X):
@@ -162,8 +176,10 @@ class RegressionANNModel(object):
 
 
 # test
-# X = torch.Tensor(X)
-# y = torch.Tensor(y)
-# ann_model = RegressionANNModel()
-# ann_model.fit(X, y, hidden_list=[1, 2, 16], K=2, max_iter=1000)
-# print(ann_model.predict(X[:3,:]))
+X = torch.Tensor(X)
+y = torch.Tensor(y)
+ann_model = RegressionANNModel()
+ann_model.fit(X, y, hidden_list=[1, 2, 16], K=2, max_iter=1000)
+print(ann_model.predict(X[:3,:]))
+
+
